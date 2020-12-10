@@ -13,14 +13,16 @@ import time
 
 
 def main():
-    # 
+
+#### Step 1: Open Habitica's website ####
     websiteURL = "https://habitica.com/login"
     driver = webdriver.Chrome()
     driver.get(websiteURL)
-    time.sleep(4)
+    # TODO: change hard coded sleep to a reactive wait
+    time.sleep(5)
     assert "Habitica" in driver.title
 
-#### Step 1: Login to Habitica with username and password ####
+#### Step 2: Login to Habitica with username and password ####
 
     # find username and password fields on login page
     usernameField = driver.find_element_by_id("usernameInput")
@@ -41,14 +43,33 @@ def main():
     # save a screenshot to verify successful login
     driver.save_screenshot("test1.png")
 
-#### Step 2: Begin UI tests ####
+#### Step 3: Begin UI tests ####
 
-    ## Test that 
+    ## Test 01_AddFirstDaily
 
-    ## Fuzz testing? Text search box, naughty strings, queries
+    ## Test 02_AddSecondDaily
+
+    ## Test 03_AddThirdDaily
+
+    ## Test 04_CheckFirstDaily
+
+    ## Test 05_UncheckFirstDaily
+
+    ## Test 06_CheckAndUncheckFirstDailyOnce
+
+    ## Test 07_CheckAndUncheckFirstDailyTenTimes
+
+    ## Test 08_DeleteFirstDaily
+
+    ## Test 09_DeleteSecondDaily
+
+    ## Test 10_DeleteLastDaily
+
+    ## Fuzz testing for text search box ##
+    # naughty strings
+    # queries
 
 
-    ## 
 
 
 
