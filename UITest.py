@@ -90,13 +90,84 @@ def main():
     ThirdDeleteButton = driver.find_element_by_css_selector('[class="habitica-menu-dropdown-toggle"]')
     ThirdDeleteButton.click()
     driver.save_screenshot("test10.png")
-    ## Fuzz testing for text search box ##
+
+#### Fuzz testing for user input fields ####
+
     # naughty strings
-    # queries
+    # TODO: implement function to take in different naughty strings
+    # TODO: verify there are no errors differently than taking screenshots
 
+    ## Test 10_NaughtyString1
+    DailyTextField.clear()
+    DailyTextField.send_keys("undefined")
+    # save a screenshot to verify no errors
+    driver.save_screenshot("test1.png")
+    
+    ## Test 11_NaughtyString2
+    DailyTextField.clear()
+    DailyTextField.send_keys("undef")
+    # save a screenshot to verify no errors
+    driver.save_screenshot("test1.png")
 
+    ## Test 12_NaughtyString3
+    DailyTextField.clear()
+    DailyTextField.send_keys("null")
+    # save a screenshot to verify no errors
+    driver.save_screenshot("test1.png")
 
+    ## Test 13_NaughtyString4
+    DailyTextField.clear()
+    DailyTextField.send_keys("NULL")
+    # save a screenshot to verify no errors
+    driver.save_screenshot("test1.png")
 
+    ## Test 14_NaughtyString5
+    DailyTextField.clear()
+    DailyTextField.send_keys("(null)")
+    # save a screenshot to verify no errors
+    driver.save_screenshot("test1.png")
+
+    ## Test 15_NaughtyString6
+    DailyTextField.clear()
+    DailyTextField.send_keys("true")
+    # save a screenshot to verify no errors
+    driver.save_screenshot("test1.png")
+
+    ## Test 16_NaughtyString7
+    DailyTextField.clear()
+    DailyTextField.send_keys("false")
+    # save a screenshot to verify no errors
+    driver.save_screenshot("test1.png")
+
+    ## Test 17_NaughtyString8
+    DailyTextField.clear()
+    DailyTextField.send_keys("True")
+    # save a screenshot to verify no errors
+    driver.save_screenshot("test1.png")
+
+    ## Test 18_NaughtyString9
+    DailyTextField.clear()
+    DailyTextField.send_keys("False")
+    # save a screenshot to verify no errors
+    driver.save_screenshot("test1.png")
+
+    ## Test 18_NaughtyString9
+    DailyTextField.clear()
+    DailyTextField.send_keys("TRUE")
+    # save a screenshot to verify no errors
+    driver.save_screenshot("test1.png")
+
+    ## Test 19_NaughtyString10
+    DailyTextField.clear()
+    DailyTextField.send_keys("FALSE")
+    # save a screenshot to verify no errors
+    driver.save_screenshot("test1.png")
+
+    ## Test 20_NaughtyString10
+    DailyTextField.clear()
+    DailyTextField.send_keys("hasOwnProperty")
+    # save a screenshot to verify no errors
+    driver.save_screenshot("test1.png")
 
     driver.close()
 
