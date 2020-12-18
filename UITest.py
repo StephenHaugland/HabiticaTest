@@ -8,6 +8,7 @@
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 import time
+import json
 
 
 
@@ -32,9 +33,15 @@ def main():
     usernameField.clear()
     passwordField.clear()
 
+    # get username and pass from credential.json
+    f = open('credentials.json',)
+    credentials = json.load(f)
+    username = credentials["username"]
+    password = credentials["password"]
+
     # enter username and password into fields
-    usernameField.send_keys("YOUR_USERNAME_HERE")
-    passwordField.send_keys("YOUR_PASSWORD_HERE")    
+    usernameField.send_keys(username)
+    passwordField.send_keys(password)    
 
     # find and click login button
     loginButton = driver.find_element_by_css_selector("[type=submit]")
