@@ -16,7 +16,7 @@ def main():
 
 #### Step 1: Open Habitica's website ####
     websiteURL = "https://habitica.com/login"
-    driver = webdriver.Chrome()
+    driver = webdriver.Chrome("S:/Documents/Dev/chromedriver.exe")
     driver.get(websiteURL)
     # TODO: change hard coded sleep to a reactive wait
     time.sleep(5)
