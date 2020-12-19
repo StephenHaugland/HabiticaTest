@@ -66,7 +66,7 @@ def main():
 
     # TODO: change hard coded sleep to a reactive wait
     # wait.until
-    time.sleep(4)
+    time.sleep(5)
 
     
 
@@ -91,11 +91,21 @@ def main():
     ## Test 03_AddThirdDaily
     DailyTextField.send_keys("Make Bed")
     DailyTextField.send_keys(Keys.RETURN)
-    
-    ## Test 04_CheckFirstDaily
     time.sleep(1)
+
+    ## Test 04_CheckFirstDaily
     FirstCheckBox = driver.find_element_by_css_selector("#app > div.container-fluid > div.sticky > div > div > div.row.tasks-columns > div.tasks-column.col-lg-3.col-md-6.daily > div.tasks-list > div.sortable-tasks > div:nth-child(1) > div > div > div.left-control.d-flex.justify-content-center.task-neutral-control-bg > div")
     FirstCheckBox.click()
+    time.sleep(1)
+
+    ## Test 05_CheckSecondtDaily
+    SecondCheckBox = driver.find_element_by_css_selector("#app > div.container-fluid > div.sticky > div > div > div.row.tasks-columns > div.tasks-column.col-lg-3.col-md-6.daily > div.tasks-list > div.sortable-tasks > div:nth-child(2) > div > div > div.left-control.d-flex.justify-content-center.task-neutral-control-bg > div")
+    SecondCheckBox.click()
+    time.sleep(1)
+
+    ## Test 06_CheckThirdDaily
+    ThirdCheckBox = driver.find_element_by_css_selector("#app > div.container-fluid > div.sticky > div > div > div.row.tasks-columns > div.tasks-column.col-lg-3.col-md-6.daily > div.tasks-list > div.sortable-tasks > div:nth-child(3) > div > div > div.left-control.d-flex.justify-content-center.task-neutral-control-bg > div")
+    ThirdCheckBox.click()
     time.sleep(1)
 
     ## Test 05_UncheckFirstDaily
@@ -113,7 +123,7 @@ def main():
     for x in range(10):
     #     FirstCheckBox = driver.find_element_by_css_selector("#app > div.container-fluid > div.sticky > div > div > div.row.tasks-columns > div.tasks-column.col-lg-3.col-md-6.daily > div.tasks-list > div.sortable-tasks > div:nth-child(1) > div > div > div.left-control.d-flex.justify-content-center.task-neutral-control-bg > div")
         FirstCheckBox.click()
-        time.sleep(1)
+        # time.sleep(.2)
     #     FirstCheckBox = driver.find_element_by_css_selector("#app > div.container-fluid > div.sticky > div > div > div.row.tasks-columns > div.tasks-column.col-lg-3.col-md-6.daily > div.tasks-list > div.sortable-tasks > div:nth-child(1) > div > div > div.left-control.d-flex.justify-content-center.task-disabled-daily-todo-control-bg > div")
         FirstCheckBox.click()
 
@@ -142,8 +152,28 @@ def main():
     a = Alert(driver)
     a.accept()
     
-    time.sleep(2)
+    time.sleep(1)
+    
+    # ## Test 11_AddAndDelete100Dailies
+    
+    # for x in range(100):
+    #     DailyTextField.clear()
+    #     DailyTextField.send_keys(x)
+    #     DailyTextField.send_keys(Keys.RETURN)
 
+    # time.sleep(1)
+   
+
+    # for x in range(100):
+    #     time.sleep(.1)
+    #     FirstDailyOptions = driver.find_element_by_css_selector("#app > div.container-fluid > div.sticky > div > div > div.row.tasks-columns > div.tasks-column.col-lg-3.col-md-6.daily > div.tasks-list > div.sortable-tasks > div > div > div > div.task-content > div.task-clickable-area.task-clickable-area-user > div.d-flex.justify-content-between > div > div.habitica-menu-dropdown-toggle")
+    #     FirstDailyDelete = driver.find_element_by_css_selector("#app > div.container-fluid > div.sticky > div > div > div.row.tasks-columns > div.tasks-column.col-lg-3.col-md-6.daily > div.tasks-list > div.sortable-tasks > div:nth-child(1) > div > div > div.task-content > div.task-clickable-area.task-clickable-area-user > div.d-flex.justify-content-between > div > div.dropdown-menu > div > div:nth-child(4)")
+    #     FirstDailyOptions.click()
+    #     FirstDailyDelete.click()
+    #     a = Alert(driver)
+    #     a.accept()
+        
+    time.sleep(1)
 #### Fuzz testing for user input fields ####
 
 #     # naughty strings
