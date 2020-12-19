@@ -8,9 +8,13 @@
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.support import expected_conditions
 from selenium.common.exceptions import TimeoutException
 from selenium.webdriver.common.by import By
+from selenium.webdriver.common.alert import Alert
+from selenium.common.exceptions import NoSuchElementException
+from selenium.common.exceptions import StaleElementReferenceException
+
 import time
 import json
 
@@ -62,7 +66,7 @@ def main():
 
     # TODO: change hard coded sleep to a reactive wait
     # wait.until
-    time.sleep(5)
+    time.sleep(4)
 
     
 
@@ -75,55 +79,72 @@ def main():
     # Locate the text field to add new dailies
     DailyTextField = driver.find_element_by_css_selector("#app > div.container-fluid > div.sticky > div > div > div.row.tasks-columns > div.tasks-column.col-lg-3.col-md-6.daily > div.tasks-list > textarea")
 
-
     ## Test 01_AddFirstDaily 
     DailyTextField.send_keys("Floss")
     DailyTextField.send_keys(Keys.RETURN)
-    # save a screenshot to verify task successfully added
-    driver.save_screenshot("test1.png")
-
+    
     ## Test 02_AddSecondDaily
     DailyTextField.clear()
     DailyTextField.send_keys("Read")
     DailyTextField.send_keys(Keys.RETURN)
-    # save a screenshot to verify task successfully added
-    driver.save_screenshot("test1.png")
-
+    
     ## Test 03_AddThirdDaily
     DailyTextField.send_keys("Make Bed")
     DailyTextField.send_keys(Keys.RETURN)
-    driver.save_screenshot("test1.png")
+    
+    ## Test 04_CheckFirstDaily
+    time.sleep(1)
+    FirstCheckBox = driver.find_element_by_css_selector("#app > div.container-fluid > div.sticky > div > div > div.row.tasks-columns > div.tasks-column.col-lg-3.col-md-6.daily > div.tasks-list > div.sortable-tasks > div:nth-child(1) > div > div > div.left-control.d-flex.justify-content-center.task-neutral-control-bg > div")
+    FirstCheckBox.click()
+    time.sleep(1)
 
-    # ## Test 04_CheckFirstDaily
-    # FirstCheckBox = driver.find_element_by_css_selector('[class="task-control daily-todo-control task-better-control-inner-daily-todo"]')
-    # FirstCheckBox.click()
-    # driver.save_screenshot("test1.png")
-    # ## Test 05_UncheckFirstDaily
-    # FirstCheckBox.click()
-    # driver.save_screenshot("test1.png")
-    # ## Test 06_CheckAndUncheckFirstDailyOnce
-    # FirstCheckBox.click()
-    # FirstCheckBox.click()
-    # driver.save_screenshot("test1.png")
-#     ## Test 07_CheckAndUncheckFirstDailyTenTimes
-#     for x in range(10):
-#         FirstCheckBox.click()
-#         FirstCheckBox.click()
-#     driver.save_screenshot("test7.png")
-#     ## Test 08_DeleteFirstDaily
-#     FirstDeleteButton = driver.find_element_by_css_selector('[class="habitica-menu-dropdown-toggle"]')
-#     FirstDeleteButton.click()
-#     driver.save_screenshot("test8.png")
-#     ## Test 09_DeleteSecondDaily
-#     SecondDeleteButton = driver.find_element_by_css_selector('[class="habitica-menu-dropdown-toggle"]')
-#     SecondDeleteButton.click()
-#     driver.save_screenshot("test9.png")
-#     ## Test 10_DeleteLastDaily
-#     ThirdDeleteButton = driver.find_element_by_css_selector('[class="habitica-menu-dropdown-toggle"]')
-#     ThirdDeleteButton.click()
-#     driver.save_screenshot("test10.png")
+    ## Test 05_UncheckFirstDaily
+    FirstUncheckBox = driver.find_element_by_css_selector("#app > div.container-fluid > div.sticky > div > div > div.row.tasks-columns > div.tasks-column.col-lg-3.col-md-6.daily > div.tasks-list > div.sortable-tasks > div:nth-child(1) > div > div > div.left-control.d-flex.justify-content-center.task-disabled-daily-todo-control-bg > div")
+    FirstUncheckBox.click()
+    time.sleep(1)
 
-# #### Fuzz testing for user input fields ####
+    # Test 06_CheckAndUncheckFirstDailyOnce
+    # FirstCheckBox = driver.find_element_by_css_selector("#app > div.container-fluid > div.sticky > div > div > div.row.tasks-columns > div.tasks-column.col-lg-3.col-md-6.daily > div.tasks-list > div.sortable-tasks > div:nth-child(1) > div > div > div.left-control.d-flex.justify-content-center.task-neutral-control-bg > div")
+    FirstCheckBox.click()
+    time.sleep(1)
+    FirstUncheckBox.click()
+    
+    ## Test 07_CheckAndUncheckFirstDailyTenTimes
+    for x in range(10):
+    #     FirstCheckBox = driver.find_element_by_css_selector("#app > div.container-fluid > div.sticky > div > div > div.row.tasks-columns > div.tasks-column.col-lg-3.col-md-6.daily > div.tasks-list > div.sortable-tasks > div:nth-child(1) > div > div > div.left-control.d-flex.justify-content-center.task-neutral-control-bg > div")
+        FirstCheckBox.click()
+        time.sleep(1)
+    #     FirstCheckBox = driver.find_element_by_css_selector("#app > div.container-fluid > div.sticky > div > div > div.row.tasks-columns > div.tasks-column.col-lg-3.col-md-6.daily > div.tasks-list > div.sortable-tasks > div:nth-child(1) > div > div > div.left-control.d-flex.justify-content-center.task-disabled-daily-todo-control-bg > div")
+        FirstCheckBox.click()
+
+
+    ## Test 08_DeleteFirstDaily
+    FirstDailyOptions = driver.find_element_by_css_selector("#app > div.container-fluid > div.sticky > div > div > div.row.tasks-columns > div.tasks-column.col-lg-3.col-md-6.daily > div.tasks-list > div.sortable-tasks > div:nth-child(1) > div > div > div.task-content > div.task-clickable-area.task-clickable-area-user > div.d-flex.justify-content-between > div > div.habitica-menu-dropdown-toggle")
+    FirstDailyOptions.click()
+    FirstDailyDelete = driver.find_element_by_css_selector("#app > div.container-fluid > div.sticky > div > div > div.row.tasks-columns > div.tasks-column.col-lg-3.col-md-6.daily > div.tasks-list > div.sortable-tasks > div:nth-child(1) > div > div > div.task-content > div.task-clickable-area.task-clickable-area-user > div.d-flex.justify-content-between > div > div.dropdown-menu > div > div:nth-child(4) > span > span.text")
+    FirstDailyDelete.click()
+    a = Alert(driver)
+    a.accept()
+    
+    ## Test 09_DeleteSecondDaily
+    SecondDailyOptions = driver.find_element_by_css_selector("#app > div.container-fluid > div.sticky > div > div > div.row.tasks-columns > div.tasks-column.col-lg-3.col-md-6.daily > div.tasks-list > div.sortable-tasks > div:nth-child(2) > div > div > div.task-content > div.task-clickable-area.task-clickable-area-user > div.d-flex.justify-content-between > div > div.habitica-menu-dropdown-toggle")
+    SecondDailyOptions.click()
+    SecondDailyDelete = driver.find_element_by_css_selector("#app > div.container-fluid > div.sticky > div > div > div.row.tasks-columns > div.tasks-column.col-lg-3.col-md-6.daily > div.tasks-list > div.sortable-tasks > div:nth-child(2) > div > div > div.task-content > div.task-clickable-area.task-clickable-area-user > div.d-flex.justify-content-between > div > div.dropdown-menu > div > div:nth-child(4) > span > span.text")
+    SecondDailyDelete.click()
+    a = Alert(driver)
+    a.accept()
+
+    ## Test 10_DeleteThirdDaily
+    ThirdDailyOptions = driver.find_element_by_css_selector("#app > div.container-fluid > div.sticky > div > div > div.row.tasks-columns > div.tasks-column.col-lg-3.col-md-6.daily > div.tasks-list > div.sortable-tasks > div:nth-child(1) > div > div > div.task-content > div.task-clickable-area.task-clickable-area-user > div.d-flex.justify-content-between > div > div.habitica-menu-dropdown-toggle")
+    ThirdDailyOptions.click()
+    ThirdDailyDelete = driver.find_element_by_css_selector("#app > div.container-fluid > div.sticky > div > div > div.row.tasks-columns > div.tasks-column.col-lg-3.col-md-6.daily > div.tasks-list > div.sortable-tasks > div:nth-child(1) > div > div > div.task-content > div.task-clickable-area.task-clickable-area-user > div.d-flex.justify-content-between > div > div.dropdown-menu > div > div:nth-child(4) > span > span.text")
+    ThirdDailyDelete.click()
+    a = Alert(driver)
+    a.accept()
+    
+    time.sleep(2)
+
+#### Fuzz testing for user input fields ####
 
 #     # naughty strings
 #     # TODO: implement function to take in different naughty strings
