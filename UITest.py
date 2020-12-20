@@ -14,76 +14,29 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.common.alert import Alert
 from selenium.common.exceptions import NoSuchElementException
 from selenium.common.exceptions import StaleElementReferenceException
-
 import time
 import json
 
 
 
 def main():
-
 #### Step 1: Open Habitica's website ####
-    websiteURL = "https://habitica.com/login"
-    driver = webdriver.Chrome("S:/Documents/Dev/chromedriver.exe")
-    driver.get(websiteURL)
-    # TODO: change hard coded sleep to a reactive wait
-    time.sleep(2)
-    assert "Habitica" in driver.title
-
-    # timeout = 5
-    # try:
-    #     element_present = EC.presence_of_element_located((By.ID, 'main'))
-    #     WebDriverWait(driver, timeout).until(element_present)
-    # except TimeoutException:
-    #     print("Timed out waiting for page to load")
-    # finally:
-    #     print("Page loaded")
+    driver = setup()
 
 #### Step 2: Login to Habitica with username and password ####
-
-    # find username and password fields on login page
-    usernameField = driver.find_element_by_id("usernameInput")
-    passwordField = driver.find_element_by_id("passwordInput")
-
-    # clear both fields
-    usernameField.clear()
-    passwordField.clear()
-
-    # get username and pass from credential.json
-    f = open('credentials.json',)
-    credentials = json.load(f)
-    username = credentials["username"]
-    password = credentials["password"]
-
-    # enter username and password into fields
-    usernameField.send_keys(username)
-    passwordField.send_keys(password)    
-
-    # find and click login button
-    loginButton = driver.find_element_by_css_selector("[type=submit]")
-    loginButton.click()
-
-    # TODO: change hard coded sleep to a reactive wait
-    # wait.until
-    time.sleep(5)
-
-    
-
-
-    # # save a screenshot to verify successful login
-    # driver.save_screenshot("login.png")
+    login(driver)
 
 #### Step 3: Begin UI Integration tests ####
 
+#### Daily Tests ####
     # Locate the text field to add new dailies
-    # DailyTextField = driver.find_element_by_css_selector("#app > div.container-fluid > div.sticky > div > div > div.row.tasks-columns > div.tasks-column.col-lg-3.col-md-6.daily > div.tasks-list > textarea")
+    DailyTextField = driver.find_element_by_css_selector("#app > div.container-fluid > div.sticky > div > div > div.row.tasks-columns > div.tasks-column.col-lg-3.col-md-6.daily > div.tasks-list > textarea")
 
     # ## Test 01_AddFirstDaily 
     # DailyTextField.send_keys("Floss")
     # DailyTextField.send_keys(Keys.RETURN)
-    
+
     # ## Test 02_AddSecondDaily
-    # DailyTextField.clear()
     # DailyTextField.send_keys("Read")
     # DailyTextField.send_keys(Keys.RETURN)
     
@@ -155,7 +108,7 @@ def main():
     
     # ## Test 11_AddAndDelete100Dailies
     
-    # for x in range(100):
+    # for x in range(10):
     #     DailyTextField.clear()
     #     DailyTextField.send_keys(x)
     #     DailyTextField.send_keys(Keys.RETURN)
@@ -163,7 +116,7 @@ def main():
     # time.sleep(1)
    
 
-    # for x in range(100):
+    # for x in range(10):
     #     time.sleep(.1)
     #     FirstDailyOptions = driver.find_element_by_css_selector("#app > div.container-fluid > div.sticky > div > div > div.row.tasks-columns > div.tasks-column.col-lg-3.col-md-6.daily > div.tasks-list > div.sortable-tasks > div > div > div > div.task-content > div.task-clickable-area.task-clickable-area-user > div.d-flex.justify-content-between > div > div.habitica-menu-dropdown-toggle")
     #     FirstDailyDelete = driver.find_element_by_css_selector("#app > div.container-fluid > div.sticky > div > div > div.row.tasks-columns > div.tasks-column.col-lg-3.col-md-6.daily > div.tasks-list > div.sortable-tasks > div:nth-child(1) > div > div > div.task-content > div.task-clickable-area.task-clickable-area-user > div.d-flex.justify-content-between > div > div.dropdown-menu > div > div:nth-child(4)")
@@ -172,35 +125,44 @@ def main():
     #     a = Alert(driver)
     #     a.accept()
         
-    time.sleep(1)
+    # time.sleep(1)
 #### Fuzz testing for user input fields ####
 
 #     # naughty strings
+#     # Sourced From: https://github.com/minimaxir/big-list-of-naughty-strings/blob/master/blns.json
 #     # TODO: implement function to take in different naughty strings
 #     # TODO: verify there are no errors differently than taking screenshots
 
-#     ## Test 10_NaughtyString1
-#     DailyTextField.clear()
-#     DailyTextField.send_keys("undefined")
-#     DailyTextField.send_keys(Keys.RETURN)
+    nsJSON = open('NaughtyString.json',encoding="utf8")
+    naughtyStrings = json.load(nsJSON)
+    # Test 10_NaughtyString1
 
+    # create dailies using the first 100 naughty strings as task names to see if any errors occur
+    for i in range(1,5):
+        dailyFuzzTest(driver, naughtyStrings[i])
     
-#     ## Test 11_NaughtyString2
-#     DailyTextField.clear()
-#     DailyTextField.send_keys("undef")
-#     DailyTextField.send_keys(Keys.RETURN)
+    
+    # deleteNFirstDailies(driver,5)
 
 
-#     ## Test 12_NaughtyString3
-#     DailyTextField.clear()
-#     DailyTextField.send_keys("null")
-#     DailyTextField.send_keys(Keys.RETURN)
+
+    # ## Test 11_NaughtyString2
+    # createNewDaily(driver, "undef")
+    # time.sleep(1)
+    # deleteFirstDaily(driver)
 
 
-#     ## Test 13_NaughtyString4
-#     DailyTextField.clear()
-#     DailyTextField.send_keys("NULL")
-#     DailyTextField.send_keys(Keys.RETURN)
+    # ## Test 12_NaughtyString3
+    # createNewDaily(driver, "null")
+    # time.sleep(1)
+    # deleteFirstDaily(driver)
+
+
+    # ## Test 13_NaughtyString4
+    # createNewDaily(driver, "NULL")
+    # time.sleep(1)
+    # deleteFirstDaily(driver)
+
 
 
 #     ## Test 14_NaughtyString5
@@ -246,49 +208,24 @@ def main():
 
 ### Exploratory Tests - Tags
 
-    def tagTest(driver, tagName, deleteTaskOnCompletion):
-        # Create Task
-        DailyTextField = driver.find_element_by_css_selector("#app > div.container-fluid > div.sticky > div > div > div.row.tasks-columns > div.tasks-column.col-lg-3.col-md-6.daily > div.tasks-list > textarea")
-        DailyTextField.send_keys("Tag Test")
-        DailyTextField.send_keys(Keys.RETURN)
-        # Inspect Options
-        FirstDailyOptions = driver.find_element_by_css_selector("#app > div.container-fluid > div.sticky > div > div > div.row.tasks-columns > div.tasks-column.col-lg-3.col-md-6.daily > div.tasks-list > div.sortable-tasks > div:nth-child(1) > div > div > div.task-content")
-        FirstDailyOptions.click()
-        FirstDailyEdit = driver.find_element_by_css_selector("#app > div.container-fluid > div.sticky > div > div > div.row.tasks-columns > div.tasks-column.col-lg-3.col-md-6.daily > div.tasks-list > div.sortable-tasks > div:nth-child(1) > div > div > div.task-content > div.task-clickable-area.task-clickable-area-user > div.d-flex.justify-content-between > div > div.dropdown-menu > div > div.dropdown-item.edit-task-item")
-        FirstDailyEdit.click()
-        time.sleep(1)
-        FirstDailyTags = driver.find_element_by_css_selector("#__BVID__386__BV_toggle_")
-        FirstDailyTags.click()
-        FirstDailyTagInput = driver.find_element_by_css_selector("#__BVID__396")
-        FirstDailyTagInput.send_keys("tagName")
-        FirstDailyTagInput.send_keys(Keys.RETURN)
-        time.sleep(1)
-        FirstDailySaveOptions = driver.find_element_by_css_selector("#task-modal___BV_modal_header_ > div > div.d-flex.align-items-center.mb-3 > div > button.btn.btn-secondary.d-flex.align-items-center.justify-content-center")
-        FirstDailySaveOptions.click()
-        #Cleanup 
-        if (deleteTaskOnCompletion):
-            FirstDailyOptions = driver.find_element_by_css_selector("#app > div.container-fluid > div.sticky > div > div > div.row.tasks-columns > div.tasks-column.col-lg-3.col-md-6.daily > div.tasks-list > div.sortable-tasks > div:nth-child(1) > div > div > div.task-content > div.task-clickable-area.task-clickable-area-user > div.d-flex.justify-content-between > div > div.habitica-menu-dropdown-toggle")
-            FirstDailyOptions.click()
-            FirstDailyDelete = driver.find_element_by_css_selector("#app > div.container-fluid > div.sticky > div > div > div.row.tasks-columns > div.tasks-column.col-lg-3.col-md-6.daily > div.tasks-list > div.sortable-tasks > div:nth-child(1) > div > div > div.task-content > div.task-clickable-area.task-clickable-area-user > div.d-flex.justify-content-between > div > div.dropdown-menu > div > div:nth-child(4) > span > span.text")
-            FirstDailyDelete.click()
-            a = Alert(driver)
-            a.accept()
 
-    ## Test XX_RegularString
-    tagTest(driver, "Productivity", True)
 
-    ## Test XX_NullString
-    tagTest(driver, "Null", True)
+    # ## Test XX_RegularString
+    # tagTest(driver, "Productivity", True)
 
-    ## Test XX_EmptyString
-    tagTest(driver, "", True)
+    # ## Test XX_NullString
+    # tagTest(driver, "Null", True)
 
-    ## Test XX_String
-    tagTest(driver, "", True)
+    # ## Test XX_EmptyString
+    # tagTest(driver, "", True)
 
-    ## Test XX_VeryLongString
-    longString = "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
-    tagTest(driver, longString, True)
+    # ## Test XX_String
+    # tagTest(driver, "", True)
+
+    # ## Test XX_VeryLongString
+    # longString = "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    # tagTest(driver, longString, True)
+
 ### Reward Tests
 
     # ## Test XX_RewardZero
@@ -352,10 +289,114 @@ def main():
     driver.close()
 
 
+
+
+def setup():
+    websiteURL = "https://habitica.com/login"
+    driver = webdriver.Chrome("S:/Documents/Dev/chromedriver.exe")
+    driver.get(websiteURL)
+    # TODO: change hard coded sleep to a reactive wait
+    time.sleep(2)
+    assert "Habitica" in driver.title
+    return driver
+
+def login(driver):
+    # find username and password fields on login page
+    usernameField = driver.find_element_by_id("usernameInput")
+    passwordField = driver.find_element_by_id("passwordInput")
+
+    # clear both fields
+    usernameField.clear()
+    passwordField.clear()
+
+    # get username and pass from credential.json
+    f = open('credentials.json',)
+    credentials = json.load(f)
+    username = credentials["username"]
+    password = credentials["password"]
+    
+    # enter username and password into fields
+    usernameField.send_keys(username)
+    passwordField.send_keys(password)    
+
+    # find and click login button
+    loginButton = driver.find_element_by_css_selector("[type=submit]")
+    loginButton.click()
+
+    # TODO: change hard coded sleep to a reactive wait
+    # wait.until
+    time.sleep(5)
+
+    # save a screenshot to verify successful login
+    # driver.save_screenshot("login.png")
+
+
+def deleteFirstDaily(driver):
+    time.sleep(1)
+    FirstDailyOptions = driver.find_element_by_css_selector("#app > div.container-fluid > div.sticky > div > div > div.row.tasks-columns > div.tasks-column.col-lg-3.col-md-6.daily > div.tasks-list > div.sortable-tasks > div > div > div > div.task-content > div.task-clickable-area.task-clickable-area-user > div.d-flex.justify-content-between > div > div.habitica-menu-dropdown-toggle")
+    FirstDailyDelete = driver.find_element_by_css_selector("#app > div.container-fluid > div.sticky > div > div > div.row.tasks-columns > div.tasks-column.col-lg-3.col-md-6.daily > div.tasks-list > div.sortable-tasks > div:nth-child(1) > div > div > div.task-content > div.task-clickable-area.task-clickable-area-user > div.d-flex.justify-content-between > div > div.dropdown-menu > div > div:nth-child(4)")
+    FirstDailyOptions.click()
+    FirstDailyDelete.click()
+    a = Alert(driver)
+    a.accept()
+
+def deleteNFirstDailies(driver, N):
+    for x in range(N):
+        time.sleep(.1)
+        FirstDailyOptions = driver.find_element_by_css_selector("#app > div.container-fluid > div.sticky > div > div > div.row.tasks-columns > div.tasks-column.col-lg-3.col-md-6.daily > div.tasks-list > div.sortable-tasks > div > div > div > div.task-content > div.task-clickable-area.task-clickable-area-user > div.d-flex.justify-content-between > div > div.habitica-menu-dropdown-toggle")
+        FirstDailyDelete = driver.find_element_by_css_selector("#app > div.container-fluid > div.sticky > div > div > div.row.tasks-columns > div.tasks-column.col-lg-3.col-md-6.daily > div.tasks-list > div.sortable-tasks > div:nth-child(1) > div > div > div.task-content > div.task-clickable-area.task-clickable-area-user > div.d-flex.justify-content-between > div > div.dropdown-menu > div > div:nth-child(4)")
+        FirstDailyOptions.click()
+        FirstDailyDelete.click()
+        a = Alert(driver)
+        a.accept()
+
+def createNewDaily(driver, name):
+    DailyTextField = driver.find_element_by_css_selector("#app > div.container-fluid > div.sticky > div > div > div.row.tasks-columns > div.tasks-column.col-lg-3.col-md-6.daily > div.tasks-list > textarea")
+    DailyTextField.send_keys(name)
+    DailyTextField.send_keys(Keys.RETURN)
+
+
+def dailyFuzzTest(driver, name):
+    createNewDaily(driver, name)
+    time.sleep(1)
+    deleteFirstDaily(driver)
+
+# Parameters: driv - webdriver object
+#             tagName - name of tag to be created
+#             deleteTaskOnCompletion - boolean if task should be deleted or not
+def tagTest(self, driver, tagName, deleteTaskOnCompletion):
+    # Create Task
+    DailyTextField = driver.find_element_by_css_selector("#app > div.container-fluid > div.sticky > div > div > div.row.tasks-columns > div.tasks-column.col-lg-3.col-md-6.daily > div.tasks-list > textarea")
+    DailyTextField.send_keys("Tag Test")
+    DailyTextField.send_keys(Keys.RETURN)
+    # Inspect Options
+    FirstDailyOptions = driver.find_element_by_css_selector("#app > div.container-fluid > div.sticky > div > div > div.row.tasks-columns > div.tasks-column.col-lg-3.col-md-6.daily > div.tasks-list > div.sortable-tasks > div:nth-child(1) > div > div > div.task-content")
+    FirstDailyOptions.click()
+    FirstDailyEdit = driver.find_element_by_css_selector("#app > div.container-fluid > div.sticky > div > div > div.row.tasks-columns > div.tasks-column.col-lg-3.col-md-6.daily > div.tasks-list > div.sortable-tasks > div:nth-child(1) > div > div > div.task-content > div.task-clickable-area.task-clickable-area-user > div.d-flex.justify-content-between > div > div.dropdown-menu > div > div.dropdown-item.edit-task-item")
+    FirstDailyEdit.click()
+    time.sleep(1)
+    FirstDailyTags = driver.find_element_by_css_selector("#__BVID__386__BV_toggle_")
+    FirstDailyTags.click()
+    FirstDailyTagInput = driver.find_element_by_css_selector("#__BVID__396")
+    FirstDailyTagInput.send_keys("tagName")
+    FirstDailyTagInput.send_keys(Keys.RETURN)
+    time.sleep(1)
+    FirstDailySaveOptions = driver.find_element_by_css_selector("#task-modal___BV_modal_header_ > div > div.d-flex.align-items-center.mb-3 > div > button.btn.btn-secondary.d-flex.align-items-center.justify-content-center")
+    FirstDailySaveOptions.click()
+    #Cleanup 
+    if (deleteTaskOnCompletion):
+        FirstDailyOptions = driver.find_element_by_css_selector("#app > div.container-fluid > div.sticky > div > div > div.row.tasks-columns > div.tasks-column.col-lg-3.col-md-6.daily > div.tasks-list > div.sortable-tasks > div:nth-child(1) > div > div > div.task-content > div.task-clickable-area.task-clickable-area-user > div.d-flex.justify-content-between > div > div.habitica-menu-dropdown-toggle")
+        FirstDailyOptions.click()
+        FirstDailyDelete = driver.find_element_by_css_selector("#app > div.container-fluid > div.sticky > div > div > div.row.tasks-columns > div.tasks-column.col-lg-3.col-md-6.daily > div.tasks-list > div.sortable-tasks > div:nth-child(1) > div > div > div.task-content > div.task-clickable-area.task-clickable-area-user > div.d-flex.justify-content-between > div > div.dropdown-menu > div > div:nth-child(4) > span > span.text")
+        FirstDailyDelete.click()
+        a = Alert(driver)
+        a.accept()
+
+
 # Parameters: driv - webdriver object
 #             cost - cost of reward
 #             name - name of reward item
-def rewardTest(driv, cost, name):
+def rewardTest(self, driv, cost, name):
     # Create reward
     RewardTextField = driv.find_element_by_css_selector("#app > div.container-fluid > div.sticky > div > div > div.row.tasks-columns > div.tasks-column.col-lg-3.col-md-6.reward > div.tasks-list > textarea")
     RewardTextField.send_keys(name)
