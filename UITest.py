@@ -126,6 +126,8 @@ def main():
     #     a.accept()
         
     # time.sleep(1)
+
+
 #### Fuzz testing for user input fields ####
 
 #     # naughty strings
@@ -133,77 +135,24 @@ def main():
 #     # TODO: implement function to take in different naughty strings
 #     # TODO: verify there are no errors differently than taking screenshots
 
+
+
     nsJSON = open('NaughtyString.json',encoding="utf8")
     naughtyStrings = json.load(nsJSON)
     # Test 10_NaughtyString1
 
-    # create dailies using the first 100 naughty strings as task names to see if any errors occur
-    for i in range(1,5):
-        dailyFuzzTest(driver, naughtyStrings[i])
+    # create dailies using the first N naughty strings as task names to see if any errors occur
+    N = 10
+    for i in range(1,N):
+        print("Task Name: " + naughtyStrings[i])
+        try:
+            dailyFuzzTest(driver, naughtyStrings[i])
+            print("Test Passed")
+        except:
+            print("Test Failed")
+
+
     
-    
-    # deleteNFirstDailies(driver,5)
-
-
-
-    # ## Test 11_NaughtyString2
-    # createNewDaily(driver, "undef")
-    # time.sleep(1)
-    # deleteFirstDaily(driver)
-
-
-    # ## Test 12_NaughtyString3
-    # createNewDaily(driver, "null")
-    # time.sleep(1)
-    # deleteFirstDaily(driver)
-
-
-    # ## Test 13_NaughtyString4
-    # createNewDaily(driver, "NULL")
-    # time.sleep(1)
-    # deleteFirstDaily(driver)
-
-
-
-#     ## Test 14_NaughtyString5
-#     DailyTextField.clear()
-#     DailyTextField.send_keys("(null)")
-#     DailyTextField.send_keys(Keys.RETURN)
-
-#     ## Test 15_NaughtyString6
-#     DailyTextField.clear()
-#     DailyTextField.send_keys("true")
-#     DailyTextField.send_keys(Keys.RETURN)
-
-#     ## Test 16_NaughtyString7
-#     DailyTextField.clear()
-#     DailyTextField.send_keys("false")
-#     DailyTextField.send_keys(Keys.RETURN)
-
-#     ## Test 17_NaughtyString8
-#     DailyTextField.clear()
-#     DailyTextField.send_keys("True")
-#     DailyTextField.send_keys(Keys.RETURN)
-
-#     ## Test 18_NaughtyString9
-#     DailyTextField.clear()
-#     DailyTextField.send_keys("False")
-#     DailyTextField.send_keys(Keys.RETURN)
-
-#     ## Test 18_NaughtyString9
-#     DailyTextField.clear()
-#     DailyTextField.send_keys("TRUE")
-#     DailyTextField.send_keys(Keys.RETURN)
-
-#     ## Test 19_NaughtyString10
-#     DailyTextField.clear()
-#     DailyTextField.send_keys("FALSE")
-#     DailyTextField.send_keys(Keys.RETURN)
-
-#     ## Test 20_NaughtyString10
-#     DailyTextField.clear()
-#     DailyTextField.send_keys("hasOwnProperty")
-#     DailyTextField.send_keys(Keys.RETURN)
 
 
 ### Exploratory Tests - Tags
